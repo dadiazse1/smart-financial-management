@@ -66,3 +66,34 @@ an illustrative split across paid media management, content/creative, and analyt
 Values are synthetic and stored in browser localStorage only. The service split is illustrative;
 project-level time tracking, auditable cost allocation, backend persistence and multi-user
 synchronization are not yet implemented.
+
+
+## V1.5 – Team & Capacity engine
+Adds an editable synthetic team roster with monthly salary and productive hours.
+Supports two personnel costing methods: tracked hours (salary allocated by client hours
+over productive capacity) and monthly salary allocation (editable client percentages).
+Shows payroll, client-allocated personnel cost, internal/unallocated cost, capacity utilization,
+and personnel cost by client. Data is stored in browser localStorage only. It is a prototype:
+no employee records, payroll integrations, time-clock validation, leave calendar, or backend
+synchronization are implemented. Use synthetic data only.
+
+
+## V1.6 – Team, remuneration, accounts & functions
+Extends the synthetic team module to distinguish employees and contractors and model
+monthly remuneration components: base/salary, account X and Y fees, fixed fee, variable
+bonus/fee, and (for contractors) hourly rate multiplied by paid hours. Adds editable
+client/platform/account/function assignments with both monthly hours and dedication
+percentages. Supports Meta Ads, Google Ads, TikTok Ads and other/internal functions.
+The team cost engine uses the selected allocation basis (hours or percentages) for the
+client-level personnel cost summary. Assignment hours and percentages are stored together
+for operational analysis; they are not added together. Data is stored in browser localStorage.
+No statutory payroll, benefits, tax, legal classification or backend synchronization is included.
+
+
+## V1.7 – Multiple roles per person
+Adds employee and contractor role catalogs and permits selecting multiple roles/functions
+for one team member. Employee roles: Gerente, Líder de Marketing Digital and Auxiliar
+Contable. Contractor roles: Trafficker, Diseñador, Community Manager, Project Manager,
+Administrativo, Estratega and Auditoría Comercial. Role selection is stored with the
+synthetic team record in browser localStorage. This is an editable prototype, not an HR
+master-data or legal classification system.
