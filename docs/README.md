@@ -55,3 +55,14 @@ Corrected the sample internal usage driver so usage-based tools start with 90 cl
 and 10 internal agency units, consistent with the sample allocation. Existing browser demo
 records created by V1.3 are migrated once when this version loads. This is a demo-only
 calculation and should be replaced with measured usage data in a production system.
+
+
+## V1.4 – Client profitability engine
+Adds a bilingual client profitability module with fictional editable monthly revenue,
+personnel, freelancer and other direct cost assumptions. Allocated shared tool costs are
+pulled from the Digital Tools allocation engine, then total delivery cost, gross profit and
+gross margin are recalculated by client. A selected-client service contribution view provides
+an illustrative split across paid media management, content/creative, and analytics/strategy.
+Values are synthetic and stored in browser localStorage only. The service split is illustrative;
+project-level time tracking, auditable cost allocation, backend persistence and multi-user
+synchronization are not yet implemented.
