@@ -1,25 +1,22 @@
-# Smart Financial Management — V1.8
+# Smart Financial Management — V1.9
 
-Bilingual (Spanish/English) financial-costing prototype for digital marketing agencies.
+Prototipo bilingüe (ES/EN) para inteligencia financiera y costeo de una agencia. Datos de demostración ficticios, almacenados únicamente en el navegador mediante localStorage.
 
-## V1.8 — Invoicing, customer-specific withholdings and collections
-- Replaces campaign analytics navigation with a financial invoicing and collections module.
-- Configure multiple withholding items per customer; customers can have different configurations.
-- Supports per-thousand rates (e.g. 9.66‰) and percentage rates (e.g. 11%, 4%, 3.5%).
-- Each withholding can use the invoice tax base or its own explicitly entered taxable base.
-- Invoice form loads that customer's configured withholdings; the user can toggle them per invoice.
-- Calculates VAT, total withholdings, expected net cash and actual collection separately.
-- Keeps profit/cash distinction: VAT is shown separately and is not treated as agency service revenue.
-- Demo invoice and withholding records are stored only in this browser using localStorage.
+## Novedades V1.9
+- Número de factura único por cliente: evita guardar duplicados.
+- Consolidación inicial de registros duplicados de la versión anterior: conserva el mayor valor esperado y el mayor recaudo conocido; no suma recaudos duplicados.
+- Edición de facturas existentes.
+- Registro de pagos parciales múltiples con fecha e historial.
+- Cálculo del saldo pendiente y validación para impedir pagos superiores al saldo.
+- Eliminación de facturas de demostración.
+- Conserva configuración individual de retenciones por cliente y cálculo porcentual / por mil.
 
-## Calculation rules
-- 9.66 per thousand: taxable base × 9.66 / 1,000.
-- Percentage withholding: taxable base × rate / 100.
-- Expected net cash: invoice taxable base + VAT − applicable withholdings.
-- Withholding selection is customer-specific and may be adjusted on each invoice. The prototype does not decide legal applicability or tax bases; users must configure them according to the applicable certificate and tax treatment.
+## Publicación en GitHub Pages
+Reemplaza `docs/index.html` y `docs/README.md` con estos archivos. Conserva `docs/PROJECT_ROADMAP.md` y la configuración de Pages. Después de confirmar los cambios, abre el sitio y actualiza con Ctrl + Shift + R.
 
-## Important limitations
-This remains a front-end demonstration, not accounting or tax software. It does not validate Colombian tax obligations, determine whether a withholding applies, calculate tax bases from legal rules, connect to DIAN/SIIGO/banks, or synchronize across users. The VAT rate is editable per invoice. Use synthetic data only. All data is local to the current browser.
-
-## Publish on GitHub Pages
-Replace `docs/index.html` and `docs/README.md` with these files. Preserve `docs/PROJECT_ROADMAP.md` and keep Pages configured to `/docs`. Commit, then refresh the site with Ctrl+Shift+R.
+## Limitaciones
+- Es un prototipo local; no tiene base de datos, autenticación, conexión con SIIGO o DIAN ni sincronización entre dispositivos.
+- La consolidación de duplicados usa número y cliente como clave. Si hay registros antiguos repetidos, conserva el mayor valor esperado y el mayor recaudo registrado, sin sumar valores potencialmente duplicados.
+- Los pagos de demostración se registran desde el botón “Registrar pago”.
+- Las retenciones son configurables; el usuario debe validar su aplicación y base gravable para cada operación.
+- No calcula obligaciones tributarias ni nómina legal.
