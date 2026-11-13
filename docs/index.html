@@ -39,15 +39,32 @@
  <div class="sub" style="margin-top:10px" data-t="serviceProjectNote">Service and project split is illustrative; client-level financial inputs drive the main profitability calculation. Detailed time tracking and project-level tool attribution are future enhancements.</div>
 </article>
 <article class="glass panel" style="margin-top:15px">
- <div class="panelhead"><div><h3>Rentabilidad financiera conectada con facturación</h3><div class="sub">Usa la base de las facturas como ingreso del servicio (sin IVA); las retenciones afectan el recaudo, no reducen el ingreso propio.</div></div><span class="badge">V1.11 · FINANZAS</span></div>
+ <div class="panelhead"><div><h3>Rentabilidad financiera integral</h3><div class="sub">Ingresos desde facturas, costos directos y gastos generales distribuidos con criterios configurables.</div></div><span class="badge">V1.12 · FINANZAS</span></div>
  <div class="grid kpis" style="grid-template-columns:repeat(4,1fr)">
   <div class="kpi"><div class="khead">Ingresos facturados (sin IVA)</div><div class="value" id="bridgeRevenue">$0</div></div>
-  <div class="kpi"><div class="khead">Costos asignados</div><div class="value" id="bridgeCosts">$0</div></div>
-  <div class="kpi"><div class="khead">Utilidad estimada</div><div class="value" id="bridgeProfit">$0</div></div>
-  <div class="kpi"><div class="khead">Margen estimado</div><div class="value" id="bridgeMargin">0%</div></div>
+  <div class="kpi"><div class="khead">Costos directos</div><div class="value" id="bridgeDirectCosts">$0</div></div>
+  <div class="kpi"><div class="khead">Gastos generales asignados</div><div class="value" id="bridgeOverhead">$0</div></div>
+  <div class="kpi"><div class="khead">Utilidad después de gastos generales</div><div class="value" id="bridgeProfit">$0</div><div class="sub" id="bridgeMargin">0%</div></div>
  </div>
- <div class="sub" style="margin:8px 0 12px">Los costos de mano de obra, contratistas y otros costos se ingresan por cliente. Las herramientas compartidas se toman del inventario y su distribución. Los clientes sin costos asignados aparecerán con costo cero: completa sus costos antes de interpretar su utilidad.</div>
- <div class="tablewrap"><table><thead><tr><th>Cliente</th><th>Base facturada</th><th>Mano de obra</th><th>Contratistas</th><th>Otros directos</th><th>Herramientas</th><th>Costo total</th><th>Utilidad</th><th>Margen</th></tr></thead><tbody id="bridgeRows"></tbody></table></div>
+ <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:10px 0 12px;padding:10px;background:#f0f6f2;border-radius:10px">
+  <label style="font-size:11px;display:flex;gap:7px;align-items:center"><input type="checkbox" id="useTeamAlloc"> Incluir automáticamente la distribución de personal desde Team & Capacity</label>
+  <span class="sub">Al activarlo, los costos de empleados y contratistas se toman de sus asignaciones; evita ingresarlos nuevamente en los campos manuales.</span>
+ </div>
+ <div class="sub" style="margin:8px 0 12px">El ingreso propio se toma de la base gravable de las facturas. El IVA y las retenciones no se suman ni se restan de la utilidad; las retenciones solo afectan el recaudo esperado. Si no hay ingresos, el margen se muestra como “Sin ingresos”.</div>
+ <div class="tablewrap"><table><thead><tr><th>Cliente</th><th>Base facturada</th><th>Mano de obra</th><th>Contratistas</th><th>Otros directos</th><th>Herramientas</th><th>Gastos generales</th><th>Costo total</th><th>Utilidad</th><th>Margen</th></tr></thead><tbody id="bridgeRows"></tbody></table></div>
+</article>
+<article class="glass panel" style="margin-top:15px">
+ <div class="panelhead"><div><h3>Gastos generales de la agencia</h3><div class="sub">Registra cada gasto una sola vez y define cómo distribuirlo entre clientes. La parte interna no se carga a los clientes.</div></div></div>
+ <div style="display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr auto;gap:8px;align-items:end" id="overheadForm">
+  <label class="sub">Concepto<input id="ohName" placeholder="Ej. Arriendo oficina" style="display:block;width:100%;padding:9px;border:1px solid #d8e4dc;border-radius:8px;margin-top:5px"></label>
+  <label class="sub">Valor mensual<input id="ohAmount" type="number" min="0" placeholder="0" style="display:block;width:100%;padding:9px;border:1px solid #d8e4dc;border-radius:8px;margin-top:5px"></label>
+  <label class="sub">Criterio<select id="ohMethod" style="display:block;width:100%;padding:9px;border:1px solid #d8e4dc;border-radius:8px;margin-top:5px"><option value="revenue">Según ingresos</option><option value="equal">En partes iguales</option><option value="manual">Asignación manual</option><option value="internal">Solo agencia (interno)</option></select></label>
+  <label class="sub">Parte interna (%)<input id="ohInternal" type="number" min="0" max="100" value="10" style="display:block;width:100%;padding:9px;border:1px solid #d8e4dc;border-radius:8px;margin-top:5px"></label>
+  <button id="addOverhead" style="border:0;background:#168653;color:white;border-radius:9px;padding:10px 13px;cursor:pointer;font-weight:700">+ Agregar gasto</button>
+ </div>
+ <div class="sub" style="margin:9px 0">Para “Asignación manual”, distribuye el gasto en la tabla de porcentajes. Los porcentajes de clientes no pueden superar el 100% menos la participación interna.</div>
+ <div class="tablewrap"><table><thead><tr><th>Concepto</th><th>Valor mensual</th><th>Criterio</th><th>Parte interna</th><th>Asignado a clientes</th><th>Acciones</th></tr></thead><tbody id="overheadRows"></tbody></table></div>
+ <div class="tablewrap" style="margin-top:10px"><table><thead><tr><th>Gasto / cliente</th><th id="overheadClientHeaders">Distribución</th></tr></thead><tbody id="overheadAllocRows"></tbody></table></div>
 </article>
 <article class="glass panel" style="margin-top:15px">
  <div class="panelhead"><div><h3>Distribución estimada por servicio</h3><div class="sub">Distribución inicial editable por porcentajes; no representa horas reales hasta que se registren por servicio.</div></div></div>
@@ -372,24 +389,55 @@ function renderTeam(){
  method.onchange=()=>{teamMethod=method.value;saveTeam();renderTeam();};
 }
 let bridgeCosts={};
-try{bridgeCosts=JSON.parse(localStorage.getItem('sfm_bridge_costs_v111'))||{};}catch(e){bridgeCosts={};}
-function saveBridgeCosts(){localStorage.setItem('sfm_bridge_costs_v111',JSON.stringify(bridgeCosts));}
-function renderFinanceBridge(){
- const names=[...new Set([...sfmInvoices.map(x=>x.client),...profitClients.map(x=>x.name)])];
- const tools=allocatedToolCostsByClient();
- const rows=names.map(name=>{const invoices=sfmInvoices.filter(x=>x.client===name);const revenue=invoices.reduce((a,x)=>a+(Number(x.base)||0),0);const old=profitClients.find(c=>c.name===name)||{};const manual=bridgeCosts[name]||{};const labor=Number(manual.labor??old.labor??0),freelance=Number(manual.freelance??old.freelance??0),other=Number(manual.other??old.other??0),tool=Number(tools[name]||0),total=labor+freelance+other+tool,profit=revenue-total,margin=revenue?profit/revenue*100:0;return {name,revenue,labor,freelance,other,tool,total,profit,margin};});
- const sum=k=>rows.reduce((a,r)=>a+r[k],0);const revenue=sum('revenue'),cost=sum('total'),profit=revenue-cost;
- const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
- set('bridgeRevenue',money(revenue));set('bridgeCosts',money(cost));set('bridgeProfit',money(profit));set('bridgeMargin',(revenue?profit/revenue*100:0).toFixed(1)+'%');
- const body=document.getElementById('bridgeRows');if(body)body.innerHTML=rows.map((r)=>`<tr><td><b>${r.name}</b></td><td>${money(r.revenue)}</td><td><input type="number" min="0" step="10000" data-bridge-client="${r.name}" data-bridge-key="labor" value="${r.labor}" style="width:105px;padding:6px;border:1px solid #d8e4dc;border-radius:7px"></td><td><input type="number" min="0" step="10000" data-bridge-client="${r.name}" data-bridge-key="freelance" value="${r.freelance}" style="width:105px;padding:6px;border:1px solid #d8e4dc;border-radius:7px"></td><td><input type="number" min="0" step="10000" data-bridge-client="${r.name}" data-bridge-key="other" value="${r.other}" style="width:105px;padding:6px;border:1px solid #d8e4dc;border-radius:7px"></td><td>${money(r.tool)}</td><td>${money(r.total)}</td><td><b>${money(r.profit)}</b></td><td>${r.margin.toFixed(1)}%</td></tr>`).join('')||'<tr><td colspan="9">Registra facturas para comenzar a calcular la rentabilidad.</td></tr>';
- document.querySelectorAll('[data-bridge-client]').forEach(inp=>inp.onchange=()=>{const n=inp.dataset.bridgeClient,k=inp.dataset.bridgeKey;bridgeCosts[n]=bridgeCosts[n]||{};bridgeCosts[n][k]=Math.max(0,Number(inp.value)||0);saveBridgeCosts();renderFinanceBridge();});
- const serviceShares=[['Pauta digital',55],['Contenido y diseño',30],['Estrategia y gestión',15]];const svc=document.getElementById('bridgeServiceRows');if(svc)svc.innerHTML=serviceShares.map(([name,pct])=>`<tr><td><b>${name}</b></td><td>${pct}%</td><td>${money(revenue*pct/100)}</td><td>${money(cost*pct/100)}</td><td><b>${money(profit*pct/100)}</b></td></tr>`).join('');
+try{bridgeCosts=JSON.parse(localStorage.getItem('sfm_bridge_costs_v112'))||JSON.parse(localStorage.getItem('sfm_bridge_costs_v111'))||{};}catch(e){bridgeCosts={};}
+let overheadExpenses=[];
+try{overheadExpenses=JSON.parse(localStorage.getItem('sfm_overhead_v112'))||[];}catch(e){overheadExpenses=[];}
+let useTeamAlloc=false;
+try{useTeamAlloc=localStorage.getItem('sfm_use_team_alloc_v112')==='true';}catch(e){}
+function saveBridgeCosts(){localStorage.setItem('sfm_bridge_costs_v112',JSON.stringify(bridgeCosts));}
+function saveOverhead(){localStorage.setItem('sfm_overhead_v112',JSON.stringify(overheadExpenses));}
+function teamCostSplitByClient(){
+ const names=toolClients.map(c=>c.name),out={};names.forEach(n=>out[n]={employee:0,contractor:0});
+ teamMembers.forEach(m=>{const pay=memberPay(m),weights=names.map((_,i)=>teamMethod==='hours'?Math.max(0,Number(m.hours?.[i])||0):Math.max(0,Number(m.pct?.[i])||0));if(teamMethod==='hours'){const cap=Math.max(0,Number(m.capacity)||0);names.forEach((n,i)=>{const v=cap?pay*weights[i]/cap:0;out[n][m.type==='employee'?'employee':'contractor']+=v;});}else{names.forEach((n,i)=>{out[n][m.type==='employee'?'employee':'contractor']+=pay*weights[i]/100;});}});
+ return out;
 }
+function getClientNames(){return [...new Set([...sfmInvoices.map(x=>x.client),...profitClients.map(x=>x.name),...toolClients.map(x=>x.name)])];}
+function overheadDistribution(names,revenueByClient){
+ const assigned={};names.forEach(n=>assigned[n]=0);let totalAssigned=0;
+ overheadExpenses.forEach(exp=>{const amount=Math.max(0,Number(exp.amount)||0),internal=Math.min(100,Math.max(0,Number(exp.internal)||0)),pool=amount*(1-internal/100);let weights={};
+  if(exp.method==='internal')return;
+  if(exp.method==='equal'){names.forEach(n=>weights[n]=names.length?1/names.length:0);}
+  else if(exp.method==='manual'){weights=exp.alloc||{};names.forEach(n=>{weights[n]=Math.max(0,Number(weights[n])||0)/100;});}
+  else {let total=names.reduce((a,n)=>a+Math.max(0,revenueByClient[n]||0),0);names.forEach(n=>weights[n]=total?Math.max(0,revenueByClient[n]||0)/total:(names.length?1/names.length:0));}
+  names.forEach(n=>{const v=pool*(weights[n]||0);assigned[n]+=v;totalAssigned+=v;});
+ });return {assigned,totalAssigned};
+}
+function renderOverhead(names,revenueByClient){
+ const rows=document.getElementById('overheadRows'),allocBody=document.getElementById('overheadAllocRows');if(!rows||!allocBody)return;
+ rows.innerHTML=overheadExpenses.map((e,i)=>{const pool=e.method==='internal'?0:(Number(e.amount)||0)*(1-Math.min(100,Math.max(0,Number(e.internal)||0))/100);return `<tr><td><b>${escapeTool(e.name)}</b></td><td>${money(e.amount)}</td><td>${e.method==='revenue'?'Según ingresos':e.method==='equal'?'Partes iguales':e.method==='manual'?'Manual':'Solo interno'}</td><td>${Number(e.internal)||0}%</td><td>${money(pool)}</td><td><button data-del-oh="${i}" style="border:0;background:#fcebea;color:#9a3830;border-radius:7px;padding:5px 8px">Eliminar</button></td></tr>`;}).join('')||'<tr><td colspan="6">No hay gastos generales registrados.</td></tr>';
+ rows.querySelectorAll('[data-del-oh]').forEach(b=>b.onclick=()=>{overheadExpenses.splice(+b.dataset.delOh,1);saveOverhead();renderFinanceBridge();});
+ document.getElementById('overheadClientHeaders').textContent=names.join(' · ')||'Sin clientes';
+ allocBody.innerHTML=overheadExpenses.filter(e=>e.method==='manual').map((e)=>`<tr><td><b>${escapeTool(e.name)}</b><div class="sub">Porcentajes sobre el valor distribuible</div></td><td>${names.map(n=>`<label style="display:inline-block;margin:3px 8px 3px 0;font-size:10px">${escapeTool(n)} <input type="number" min="0" max="100" step="1" data-oh-id="${e.id}" data-oh-client="${escapeTool(n)}" value="${Number(e.alloc?.[n])||0}" style="width:65px;padding:5px;border:1px solid #d8e4dc;border-radius:6px">%</label>`).join('')}</td></tr>`).join('')||'<tr><td colspan="2">No hay gastos con distribución manual.</td></tr>';
+ allocBody.querySelectorAll('[data-oh-id]').forEach(inp=>inp.onchange=()=>{const e=overheadExpenses.find(x=>x.id===Number(inp.dataset.ohId));if(!e)return;e.alloc=e.alloc||{};e.alloc[inp.dataset.ohClient]=Math.max(0,Math.min(100,Number(inp.value)||0));const sum=names.reduce((a,n)=>a+(Number(e.alloc[n])||0),0);if(sum>100-(Number(e.internal)||0)){alert('La suma de porcentajes de clientes no puede superar el porcentaje distribuible.');e.alloc[inp.dataset.ohClient]=0;renderFinanceBridge();return;}saveOverhead();renderFinanceBridge();});
+}
+function renderFinanceBridge(){
+ const names=getClientNames(),toolsByClient=allocatedToolCostsByClient(),teamSplit=teamCostSplitByClient(),revenueByClient={};names.forEach(n=>revenueByClient[n]=sfmInvoices.filter(x=>x.client===n).reduce((a,x)=>a+(Number(x.base)||0),0));
+ const overhead=overheadDistribution(names,revenueByClient);
+ const rows=names.map(name=>{const revenue=revenueByClient[name]||0,manual=bridgeCosts[name]||{},split=teamSplit[name]||{employee:0,contractor:0};const labor=useTeamAlloc?split.employee:Number(manual.labor??0),freelance=useTeamAlloc?split.contractor:Number(manual.freelance??0),other=Number(manual.other??0),tool=Number(toolsByClient[name]||0),general=Number(overhead.assigned[name]||0),direct=labor+freelance+other+tool,total=direct+general,profit=revenue-total,margin=revenue?profit/revenue*100:null;return {name,revenue,labor,freelance,other,tool,general,direct,total,profit,margin};});
+ const sum=k=>rows.reduce((a,r)=>a+r[k],0),revenue=sum('revenue'),direct=sum('direct'),general=sum('general'),cost=direct+general,profit=revenue-cost;
+ const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};set('bridgeRevenue',money(revenue));set('bridgeDirectCosts',money(direct));set('bridgeOverhead',money(general));set('bridgeProfit',money(profit));set('bridgeMargin',revenue?(profit/revenue*100).toFixed(1)+'%':'Sin ingresos');
+ const toggle=document.getElementById('useTeamAlloc');if(toggle){toggle.checked=useTeamAlloc;toggle.onchange=()=>{useTeamAlloc=toggle.checked;localStorage.setItem('sfm_use_team_alloc_v112',String(useTeamAlloc));renderFinanceBridge();};}
+ const body=document.getElementById('bridgeRows');if(body)body.innerHTML=rows.map(r=>`<tr><td><b>${escapeTool(r.name)}</b></td><td>${money(r.revenue)}</td><td>${useTeamAlloc?money(r.labor):`<input type="number" min="0" step="10000" data-bridge-client="${escapeTool(r.name)}" data-bridge-key="labor" value="${r.labor}" style="width:95px;padding:6px;border:1px solid #d8e4dc;border-radius:7px">`}</td><td>${useTeamAlloc?money(r.freelance):`<input type="number" min="0" step="10000" data-bridge-client="${escapeTool(r.name)}" data-bridge-key="freelance" value="${r.freelance}" style="width:95px;padding:6px;border:1px solid #d8e4dc;border-radius:7px">`}</td><td><input type="number" min="0" step="10000" data-bridge-client="${escapeTool(r.name)}" data-bridge-key="other" value="${r.other}" style="width:95px;padding:6px;border:1px solid #d8e4dc;border-radius:7px"></td><td>${money(r.tool)}</td><td>${money(r.general)}</td><td>${money(r.total)}</td><td><b>${money(r.profit)}</b></td><td>${r.margin===null?'Sin ingresos':r.margin.toFixed(1)+'%'}</td></tr>`).join('')||'<tr><td colspan="10">Registra facturas para comenzar a calcular la rentabilidad.</td></tr>';
+ document.querySelectorAll('[data-bridge-client]').forEach(inp=>inp.onchange=()=>{const n=inp.dataset.bridgeClient,k=inp.dataset.bridgeKey;bridgeCosts[n]=bridgeCosts[n]||{};bridgeCosts[n][k]=Math.max(0,Number(inp.value)||0);saveBridgeCosts();renderFinanceBridge();});
+ renderOverhead(names,revenueByClient);
+ const serviceShares=[['Pauta digital',55],['Contenido y diseño',30],['Estrategia y gestión',15]],svc=document.getElementById('bridgeServiceRows');if(svc)svc.innerHTML=serviceShares.map(([name,pct])=>`<tr><td><b>${name}</b></td><td>${pct}%</td><td>${money(revenue*pct/100)}</td><td>${money(cost*pct/100)}</td><td><b>${money(profit*pct/100)}</b></td></tr>`).join('');
+}
+document.getElementById('addOverhead').onclick=()=>{const name=document.getElementById('ohName').value.trim(),amount=Number(document.getElementById('ohAmount').value),method=document.getElementById('ohMethod').value,internal=Number(document.getElementById('ohInternal').value);if(!name||!Number.isFinite(amount)||amount<=0||!Number.isFinite(internal)||internal<0||internal>100){alert('Ingresa concepto, valor mensual y una participación interna entre 0 y 100%.');return;}overheadExpenses.push({id:Date.now(),name,amount,method,internal,alloc:{}});saveOverhead();document.getElementById('ohName').value='';document.getElementById('ohAmount').value='';renderFinanceBridge();};
 function render(){document.querySelectorAll("[data-t]").forEach(e=>{let k=e.dataset.t;if(T[lang][k])e.textContent=T[lang][k]});document.querySelectorAll(".money").forEach(e=>e.textContent=money(+e.dataset.v));document.getElementById("rows").innerHTML=accounts.map(a=>`<tr><td><b>${a[0]}</b></td><td>${money(a[1])}</td><td>${money(a[2])}</td><td>${money(a[1]-a[2])}</td><td><span class="margin">${a[3]}%</span><div class="bar"><i style="width:${a[3]}%"></i></div></td><td><span class="badge">${a[3]>=50?T[lang].healthy:T[lang].review}</span></td></tr>`).join("");document.getElementById("title").textContent=T[lang][document.querySelector(".nav button.active").dataset.page]||T[lang].titleDash;if(document.getElementById("toolAllocRows"))renderToolModule();if(document.getElementById("profitClientRows"))renderProfitability();if(document.getElementById("teamRosterRows"))renderTeam();if(document.getElementById("bridgeRows"))renderFinanceBridge();document.getElementById("noteText").textContent=T[lang][ads==="separate"?(labor==="both"?"noteBoth":"noteSeparate"):"noteCost"]+(ads==="separate"&&labor!=="both"?" "+T[lang][labor==="hours"?"noteHours":"noteSalary"]:"")}
 document.getElementById("lang").onchange=e=>{lang=e.target.value;render()};document.getElementById("currency").onchange=e=>{currency=e.target.value;render()};
 document.getElementById("nav").onclick=e=>{let b=e.target.closest("button[data-page]");if(!b)return;document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id==="p-"+b.dataset.page));render();document.getElementById("side").classList.remove("open")};
 function bindSeg(id,cb){document.getElementById(id).onclick=e=>{let b=e.target.closest("button[data-mode]");if(!b)return;document.querySelectorAll("#"+id+" button").forEach(x=>x.classList.toggle("active",x===b));cb(b.dataset.mode);render()}}
-bindSeg("labor",v=>labor=v);bindSeg("ads",v=>ads=v);document.getElementById("menu").onclick=()=>document.getElementById("side").classList.toggle("open");render();
+bindSeg("labor",v=>labor=v);bindSeg("ads",v=>ads=v);document.getElementById("menu").onclick=()=>document.getElementById("side").classList.toggle("open");
 
 // V1.10 financial invoicing: unique invoices, payment history and individual payment editing
 const sfmRetKey='sfm_v18_customer_withholdings',sfmInvKey='sfm_v18_invoices';
@@ -413,6 +461,6 @@ byId('saveInvoice').onclick=()=>{let number=byId('invNumber').value.trim(),clien
 byId('cancelInvoiceEdit').onclick=resetInvoiceForm;
 const sfmLangCopy={es:{invoicesNav:'▣　Facturación y recaudo',title:'Facturación, retenciones y recaudo',sub:'Configura las retenciones por cliente y ajusta cada factura cuando corresponda.',billed:'Valor facturado',withheld:'Retenciones',expected:'Neto esperado',received:'Recaudo real'},en:{invoicesNav:'▣　Invoices & Collections',title:'Invoicing, withholding & collections',sub:'Configure withholdings per customer and adjust each invoice when needed.',billed:'Billed amount',withheld:'Withholdings',expected:'Expected net cash',received:'Cash collected'}};
 function apply18Lang(){let l=byId('lang').value,c=sfmLangCopy[l]||sfmLangCopy.en;document.querySelector('[data-page="invoices"]').textContent=c.invoicesNav;byId('invTitle').textContent=c.title;byId('invSub').textContent=c.sub;byId('lblBilled').textContent=c.billed;byId('lblWithheld').textContent=c.withheld;byId('lblExpected').textContent=c.expected;byId('lblReceived').textContent=c.received;}
-byId('lang').addEventListener('change',apply18Lang);normalizeInvoices();renderRetentions();renderInvoices();renderFinanceBridge();apply18Lang();
+byId('lang').addEventListener('change',apply18Lang);normalizeInvoices();renderRetentions();renderInvoices();renderFinanceBridge();apply18Lang();render();
 
 </script></body></html>

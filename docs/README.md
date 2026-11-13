@@ -1,31 +1,18 @@
-# Smart Financial Management — V1.11
+# Smart Financial Management — V1.12
 
-Prototipo bilingüe (ES/EN) de inteligencia financiera y costeo para una agencia. Usa exclusivamente datos ficticios y almacenamiento local del navegador.
+## Novedades
+- Rentabilidad financiera integral por cliente.
+- Ingresos conectados a facturas: toma la base gravable sin IVA. Las retenciones no reducen el ingreso propio; se consideran en el flujo de caja.
+- Costos directos separados: personal, contratistas, otros costos y herramientas asignadas.
+- Opción para traer automáticamente los costos de empleados y contratistas desde Team & Capacity. Al activar esta opción, no ingreses nuevamente esos mismos costos manualmente.
+- Registro de gastos generales de la agencia con criterios de distribución: según ingresos, partes iguales, manual o 100% interno.
+- Porcentaje interno configurable para evitar cargar toda la estructura a los clientes.
+- Margen muestra “Sin ingresos” cuando no existe base facturada, en lugar de 0%.
 
-## Novedades V1.11 — Rentabilidad financiera conectada
-- Nuevo panel de rentabilidad que toma como ingreso de servicios la base gravable de las facturas registradas, sin sumar IVA.
-- Las retenciones se mantienen como descuentos del recaudo esperado y no reducen el ingreso propio usado para estimar rentabilidad.
-- Consolida por cliente la base facturada, costos de mano de obra, contratistas, otros costos directos y herramientas compartidas.
-- Permite ingresar/ajustar costos por cliente y conserva esos supuestos en el navegador.
-- Calcula costo total, utilidad estimada y margen por cliente.
-- Añade una vista de contribución por servicio con una distribución ilustrativa inicial de 55% pauta digital, 30% contenido/diseño y 15% estrategia/gestión.
-
-## Lógica financiera importante
-- **Ingreso para rentabilidad:** base gravable de facturas, sin IVA.
-- **Recaudo esperado:** base + IVA − retenciones aplicables.
-- **Caja recibida:** suma de pagos registrados.
-- **Saldo pendiente:** recaudo esperado − pagos registrados.
-- El IVA se muestra separado y no se trata como ingreso propio.
-- Las retenciones reducen el efectivo recibido, pero no son costos operativos ni reducen por sí mismas el ingreso por servicios.
+## Privacidad y almacenamiento
+- Datos de demostración ficticios.
+- Los datos se guardan únicamente en el almacenamiento local del navegador. No hay servidor, autenticación, respaldo central ni integración con SIIGO/DIAN.
+- Antes de activar costos automáticos de personal, verifica las asignaciones en Team & Capacity y evita duplicar esos costos en los campos manuales.
 
 ## Publicación en GitHub Pages
-Reemplaza `docs/index.html` y `docs/README.md` con estos archivos. Conserva `docs/PROJECT_ROADMAP.md` y la configuración de Pages. Después del commit, abre el sitio y actualiza con `Ctrl + Shift + R`.
-
-## Limitaciones
-- Es un prototipo local; no tiene base de datos, autenticación, sincronización entre dispositivos ni integración con SIIGO o DIAN.
-- Los costos de mano de obra, contratistas y otros costos del nuevo panel se ingresan manualmente por cliente; aún no se calculan automáticamente desde cada asignación de persona/rol/horas.
-- La distribución por servicio 55/30/15 es una hipótesis demostrativa editable en el diseño futuro, no una atribución real de horas ni costos por servicio.
-- Los costos de herramientas se leen de la distribución existente del módulo Digital Tools.
-- Los clientes sin costos asignados pueden mostrar utilidad sobreestimada; completa los costos antes de usar el resultado para tomar decisiones.
-- No calcula impuestos, retenciones legalmente aplicables ni nómina legal. Verifica las bases y tarifas con el responsable contable.
-- Todos los datos de ejemplo son ficticios. No ingreses información confidencial o datos reales de clientes, trabajadores o bancos.
+Reemplaza `docs/index.html` y `docs/README.md`. Conserva `docs/PROJECT_ROADMAP.md` y la configuración de GitHub Pages.
