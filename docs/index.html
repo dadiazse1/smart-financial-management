@@ -39,12 +39,14 @@
  <div class="sub" style="margin-top:10px" data-t="serviceProjectNote">Service and project split is illustrative; client-level financial inputs drive the main profitability calculation. Detailed time tracking and project-level tool attribution are future enhancements.</div>
 </article>
 <article class="glass panel" style="margin-top:15px">
- <div class="panelhead"><div><h3>Rentabilidad financiera integral</h3><div class="sub">Ingresos desde facturas, costos directos y gastos generales distribuidos con criterios configurables.</div></div><span class="badge">V1.12 · FINANZAS</span></div>
- <div class="grid kpis" style="grid-template-columns:repeat(4,1fr)">
+ <div class="panelhead"><div><h3>Rentabilidad financiera integral</h3><div class="sub">Ingresos desde facturas, costos directos y gastos generales distribuidos con criterios configurables.</div></div><span class="badge">V1.13 · FINANZAS</span></div>
+ <div class="grid kpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
   <div class="kpi"><div class="khead">Ingresos facturados (sin IVA)</div><div class="value" id="bridgeRevenue">$0</div></div>
   <div class="kpi"><div class="khead">Costos directos</div><div class="value" id="bridgeDirectCosts">$0</div></div>
-  <div class="kpi"><div class="khead">Gastos generales asignados</div><div class="value" id="bridgeOverhead">$0</div></div>
-  <div class="kpi"><div class="khead">Utilidad después de gastos generales</div><div class="value" id="bridgeProfit">$0</div><div class="sub" id="bridgeMargin">0%</div></div>
+  <div class="kpi"><div class="khead">Gastos generales asignados a clientes</div><div class="value" id="bridgeOverhead">$0</div></div>
+  <div class="kpi"><div class="khead">Parte interna de gastos generales</div><div class="value" id="bridgeInternal">$0</div></div>
+  <div class="kpi"><div class="khead">Gastos generales no distribuidos</div><div class="value" id="bridgeUnallocated">$0</div></div>
+  <div class="kpi"><div class="khead">Utilidad real de la agencia</div><div class="value" id="bridgeProfit">$0</div><div class="sub" id="bridgeMargin">0%</div></div>
  </div>
  <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:10px 0 12px;padding:10px;background:#f0f6f2;border-radius:10px">
   <label style="font-size:11px;display:flex;gap:7px;align-items:center"><input type="checkbox" id="useTeamAlloc"> Incluir automáticamente la distribución de personal desde Team & Capacity</label>
@@ -54,7 +56,7 @@
  <div class="tablewrap"><table><thead><tr><th>Cliente</th><th>Base facturada</th><th>Mano de obra</th><th>Contratistas</th><th>Otros directos</th><th>Herramientas</th><th>Gastos generales</th><th>Costo total</th><th>Utilidad</th><th>Margen</th></tr></thead><tbody id="bridgeRows"></tbody></table></div>
 </article>
 <article class="glass panel" style="margin-top:15px">
- <div class="panelhead"><div><h3>Gastos generales de la agencia</h3><div class="sub">Registra cada gasto una sola vez y define cómo distribuirlo entre clientes. La parte interna no se carga a los clientes.</div></div></div>
+ <div class="panelhead"><div><h3>Gastos generales de la agencia</h3><div class="sub">Registra cada gasto una sola vez y define cómo distribuirlo entre clientes. La parte interna no se carga a los clientes, pero sí se incluye en el costo total de operación de la agencia.</div></div></div>
  <div style="display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr auto;gap:8px;align-items:end" id="overheadForm">
   <label class="sub">Concepto<input id="ohName" placeholder="Ej. Arriendo oficina" style="display:block;width:100%;padding:9px;border:1px solid #d8e4dc;border-radius:8px;margin-top:5px"></label>
   <label class="sub">Valor mensual<input id="ohAmount" type="number" min="0" placeholder="0" style="display:block;width:100%;padding:9px;border:1px solid #d8e4dc;border-radius:8px;margin-top:5px"></label>
@@ -403,14 +405,14 @@ function teamCostSplitByClient(){
 }
 function getClientNames(){return [...new Set([...sfmInvoices.map(x=>x.client),...profitClients.map(x=>x.name),...toolClients.map(x=>x.name)])];}
 function overheadDistribution(names,revenueByClient){
- const assigned={};names.forEach(n=>assigned[n]=0);let totalAssigned=0;
- overheadExpenses.forEach(exp=>{const amount=Math.max(0,Number(exp.amount)||0),internal=Math.min(100,Math.max(0,Number(exp.internal)||0)),pool=amount*(1-internal/100);let weights={};
+ const assigned={};names.forEach(n=>assigned[n]=0);let totalAssigned=0,internalTotal=0,totalExpense=0;
+ overheadExpenses.forEach(exp=>{const amount=Math.max(0,Number(exp.amount)||0),internal=Math.min(100,Math.max(0,Number(exp.internal)||0)),internalValue=exp.method==='internal'?amount:amount*internal/100,pool=exp.method==='internal'?0:amount-internalValue;internalTotal+=internalValue;totalExpense+=amount;let weights={};
   if(exp.method==='internal')return;
   if(exp.method==='equal'){names.forEach(n=>weights[n]=names.length?1/names.length:0);}
   else if(exp.method==='manual'){weights=exp.alloc||{};names.forEach(n=>{weights[n]=Math.max(0,Number(weights[n])||0)/100;});}
   else {let total=names.reduce((a,n)=>a+Math.max(0,revenueByClient[n]||0),0);names.forEach(n=>weights[n]=total?Math.max(0,revenueByClient[n]||0)/total:(names.length?1/names.length:0));}
   names.forEach(n=>{const v=pool*(weights[n]||0);assigned[n]+=v;totalAssigned+=v;});
- });return {assigned,totalAssigned};
+ });const unallocated=Math.max(0,totalExpense-internalTotal-totalAssigned);return {assigned,totalAssigned,internalTotal,totalExpense,unallocated};
 }
 function renderOverhead(names,revenueByClient){
  const rows=document.getElementById('overheadRows'),allocBody=document.getElementById('overheadAllocRows');if(!rows||!allocBody)return;
@@ -424,13 +426,13 @@ function renderFinanceBridge(){
  const names=getClientNames(),toolsByClient=allocatedToolCostsByClient(),teamSplit=teamCostSplitByClient(),revenueByClient={};names.forEach(n=>revenueByClient[n]=sfmInvoices.filter(x=>x.client===n).reduce((a,x)=>a+(Number(x.base)||0),0));
  const overhead=overheadDistribution(names,revenueByClient);
  const rows=names.map(name=>{const revenue=revenueByClient[name]||0,manual=bridgeCosts[name]||{},split=teamSplit[name]||{employee:0,contractor:0};const labor=useTeamAlloc?split.employee:Number(manual.labor??0),freelance=useTeamAlloc?split.contractor:Number(manual.freelance??0),other=Number(manual.other??0),tool=Number(toolsByClient[name]||0),general=Number(overhead.assigned[name]||0),direct=labor+freelance+other+tool,total=direct+general,profit=revenue-total,margin=revenue?profit/revenue*100:null;return {name,revenue,labor,freelance,other,tool,general,direct,total,profit,margin};});
- const sum=k=>rows.reduce((a,r)=>a+r[k],0),revenue=sum('revenue'),direct=sum('direct'),general=sum('general'),cost=direct+general,profit=revenue-cost;
- const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};set('bridgeRevenue',money(revenue));set('bridgeDirectCosts',money(direct));set('bridgeOverhead',money(general));set('bridgeProfit',money(profit));set('bridgeMargin',revenue?(profit/revenue*100).toFixed(1)+'%':'Sin ingresos');
+ const sum=k=>rows.reduce((a,r)=>a+r[k],0),revenue=sum('revenue'),direct=sum('direct'),general=sum('general'),agencyOverhead=overhead.totalExpense,agencyCost=direct+agencyOverhead,profit=revenue-agencyCost;
+ const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};set('bridgeRevenue',money(revenue));set('bridgeDirectCosts',money(direct));set('bridgeOverhead',money(general));set('bridgeInternal',money(overhead.internalTotal));set('bridgeUnallocated',money(overhead.unallocated));set('bridgeProfit',money(profit));set('bridgeMargin',revenue?(profit/revenue*100).toFixed(1)+'%':'Sin ingresos');
  const toggle=document.getElementById('useTeamAlloc');if(toggle){toggle.checked=useTeamAlloc;toggle.onchange=()=>{useTeamAlloc=toggle.checked;localStorage.setItem('sfm_use_team_alloc_v112',String(useTeamAlloc));renderFinanceBridge();};}
  const body=document.getElementById('bridgeRows');if(body)body.innerHTML=rows.map(r=>`<tr><td><b>${escapeTool(r.name)}</b></td><td>${money(r.revenue)}</td><td>${useTeamAlloc?money(r.labor):`<input type="number" min="0" step="10000" data-bridge-client="${escapeTool(r.name)}" data-bridge-key="labor" value="${r.labor}" style="width:95px;padding:6px;border:1px solid #d8e4dc;border-radius:7px">`}</td><td>${useTeamAlloc?money(r.freelance):`<input type="number" min="0" step="10000" data-bridge-client="${escapeTool(r.name)}" data-bridge-key="freelance" value="${r.freelance}" style="width:95px;padding:6px;border:1px solid #d8e4dc;border-radius:7px">`}</td><td><input type="number" min="0" step="10000" data-bridge-client="${escapeTool(r.name)}" data-bridge-key="other" value="${r.other}" style="width:95px;padding:6px;border:1px solid #d8e4dc;border-radius:7px"></td><td>${money(r.tool)}</td><td>${money(r.general)}</td><td>${money(r.total)}</td><td><b>${money(r.profit)}</b></td><td>${r.margin===null?'Sin ingresos':r.margin.toFixed(1)+'%'}</td></tr>`).join('')||'<tr><td colspan="10">Registra facturas para comenzar a calcular la rentabilidad.</td></tr>';
  document.querySelectorAll('[data-bridge-client]').forEach(inp=>inp.onchange=()=>{const n=inp.dataset.bridgeClient,k=inp.dataset.bridgeKey;bridgeCosts[n]=bridgeCosts[n]||{};bridgeCosts[n][k]=Math.max(0,Number(inp.value)||0);saveBridgeCosts();renderFinanceBridge();});
  renderOverhead(names,revenueByClient);
- const serviceShares=[['Pauta digital',55],['Contenido y diseño',30],['Estrategia y gestión',15]],svc=document.getElementById('bridgeServiceRows');if(svc)svc.innerHTML=serviceShares.map(([name,pct])=>`<tr><td><b>${name}</b></td><td>${pct}%</td><td>${money(revenue*pct/100)}</td><td>${money(cost*pct/100)}</td><td><b>${money(profit*pct/100)}</b></td></tr>`).join('');
+ const serviceShares=[['Pauta digital',55],['Contenido y diseño',30],['Estrategia y gestión',15]],svc=document.getElementById('bridgeServiceRows');if(svc)svc.innerHTML=serviceShares.map(([name,pct])=>`<tr><td><b>${name}</b></td><td>${pct}%</td><td>${money(revenue*pct/100)}</td><td>${money(agencyCost*pct/100)}</td><td><b>${money(profit*pct/100)}</b></td></tr>`).join('');
 }
 document.getElementById('addOverhead').onclick=()=>{const name=document.getElementById('ohName').value.trim(),amount=Number(document.getElementById('ohAmount').value),method=document.getElementById('ohMethod').value,internal=Number(document.getElementById('ohInternal').value);if(!name||!Number.isFinite(amount)||amount<=0||!Number.isFinite(internal)||internal<0||internal>100){alert('Ingresa concepto, valor mensual y una participación interna entre 0 y 100%.');return;}overheadExpenses.push({id:Date.now(),name,amount,method,internal,alloc:{}});saveOverhead();document.getElementById('ohName').value='';document.getElementById('ohAmount').value='';renderFinanceBridge();};
 function render(){document.querySelectorAll("[data-t]").forEach(e=>{let k=e.dataset.t;if(T[lang][k])e.textContent=T[lang][k]});document.querySelectorAll(".money").forEach(e=>e.textContent=money(+e.dataset.v));document.getElementById("rows").innerHTML=accounts.map(a=>`<tr><td><b>${a[0]}</b></td><td>${money(a[1])}</td><td>${money(a[2])}</td><td>${money(a[1]-a[2])}</td><td><span class="margin">${a[3]}%</span><div class="bar"><i style="width:${a[3]}%"></i></div></td><td><span class="badge">${a[3]>=50?T[lang].healthy:T[lang].review}</span></td></tr>`).join("");document.getElementById("title").textContent=T[lang][document.querySelector(".nav button.active").dataset.page]||T[lang].titleDash;if(document.getElementById("toolAllocRows"))renderToolModule();if(document.getElementById("profitClientRows"))renderProfitability();if(document.getElementById("teamRosterRows"))renderTeam();if(document.getElementById("bridgeRows"))renderFinanceBridge();document.getElementById("noteText").textContent=T[lang][ads==="separate"?(labor==="both"?"noteBoth":"noteSeparate"):"noteCost"]+(ads==="separate"&&labor!=="both"?" "+T[lang][labor==="hours"?"noteHours":"noteSalary"]:"")}
