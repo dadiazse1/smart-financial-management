@@ -25,3 +25,13 @@ See `docs/PROJECT_ROADMAP.md` for the development plan.
 
 ## Shared digital tools costing
 The prototype includes a centralized inventory of company-wide subscriptions and an illustrative client allocation table. Shared tools are recorded once and allocated using documented drivers such as usage, seats, hours, or agreed percentages. The demo reserves 10% for internal agency operations; client allocations should total 90% in this example. This is a UI demonstration, not yet a persistent accounting engine.
+
+
+## V1.2 – Digital Tools module
+The Digital Tools module now supports adding and deleting subscriptions, monthly cost totals,
+billing frequency, subscription and renewal dates, status, and allocation method (percentage,
+users/licenses, or consumption). Client allocation percentages and the internal agency share
+are editable; the module flags when the allocation does not total 100%.
+
+Demo changes are saved in the current browser using localStorage. They are not synchronized
+between users or devices and are not stored in a server database. All seeded data is fictional.
