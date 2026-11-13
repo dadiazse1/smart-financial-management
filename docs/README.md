@@ -35,3 +35,16 @@ are editable; the module flags when the allocation does not total 100%.
 
 Demo changes are saved in the current browser using localStorage. They are not synchronized
 between users or devices and are not stored in a server database. All seeded data is fictional.
+
+
+## V1.3 – Independent allocation engine
+Each active subscription now calculates its allocation independently using its configured method:
+- Percentage: client percentage weights plus internal agency percentage.
+- Users/licenses: assigned seats for each client and internal agency seats.
+- Consumption/usage: measured usage units for each client and internal agency usage units.
+
+Select a tool to edit its own driver values and see each client's calculated share and allocated
+cost. Inventory totals, client allocation and internal agency share recalculate from individual
+tool allocations. This remains a browser-only prototype using localStorage, not a server database
+or synchronized multi-user system. Existing V1.2 tools are retained in the same browser.
+All sample names and values are fictional.
