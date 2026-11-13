@@ -1,17 +1,17 @@
-# Smart Financial Management V1.15
+# Smart Financial Management — V1.16
 
-Demo financiera bilingüe con datos sintéticos.
+Demo bilingüe de inteligencia financiera y costeo para agencias. Todos los datos incluidos son ficticios.
 
-## Novedades
-- Se eliminan los campos fijos Account X / Account Y.
-- Las remuneraciones antiguas de esas columnas se migran una sola vez a Honorario fijo para conservar el total mensual.
-- Se pueden agregar y eliminar asignaciones ilimitadas por persona, con cliente, plataforma, cuenta/responsabilidad, función, horas y porcentaje.
-- Los nombres de clientes nuevos se incorporan automáticamente a la distribución de personal.
-- Las asignaciones distribuyen la remuneración existente; no crean pagos adicionales.
-- Persistencia local en el navegador.
+## Mejoras V1.16
+- Corrección de comas visibles entre filas de asignaciones.
+- Porcentaje de dedicación calculado automáticamente al cambiar las horas (horas / capacidad productiva mensual). El porcentaje sigue siendo editable manualmente.
+- Resumen por integrante con horas asignadas, capacidad, horas disponibles y dedicación total.
+- Alerta cuando las horas superan la capacidad mensual o la dedicación supera el 100%.
+- El costo asignado por horas se limita al costo mensual total de cada integrante, evitando que una sobreasignación genere costos superiores a su remuneración.
+- Datos locales migrados desde V1.15; no se conectan servicios externos ni bases de datos.
 
-## Publicación
-Reemplaza `docs/index.html` y `docs/README.md` en GitHub. Conserva `docs/PROJECT_ROADMAP.md`.
+## Publicación en GitHub Pages
+Reemplaza `docs/index.html` y `docs/README.md`. Conserva `docs/PROJECT_ROADMAP.md` y la configuración actual de GitHub Pages.
 
-## Importante
-Solo datos ficticios. No es un sistema de nómina legal ni tiene backend, autenticación o sincronización entre dispositivos. Revisa la distribución antes de activar la integración automática en rentabilidad para evitar duplicar costos manuales.
+## Privacidad y alcance
+Usa únicamente datos sintéticos. Los cambios se guardan en el almacenamiento local del navegador. Esta demostración no calcula nómina legal, prestaciones, aportes, impuestos ni sustituye un sistema contable.
