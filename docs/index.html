@@ -94,14 +94,22 @@ try{tools=JSON.parse(localStorage.getItem("sfm_tools_v12"))||defaultTools.map(x=
 try{toolClients=JSON.parse(localStorage.getItem("sfm_tool_clients_v12"))||defaultClients.map(x=>({...x}));}catch(e){toolClients=defaultClients.map(x=>({...x}));}
 try{internalPct=Number(localStorage.getItem("sfm_tool_internal_v12")??10);}catch(e){internalPct=10;}
 try{selectedToolId=Number(localStorage.getItem("sfm_selected_tool_v13"))||null;}catch(e){selectedToolId=null;}
+try{
+ if(localStorage.getItem("sfm_allocation_migration_v131")!=="done"){
+  tools.forEach(t=>{
+   if(t.method==="usage" && t.drivers && Number(t.internalDriver)===1) t.internalDriver=10;
+  });
+  localStorage.setItem("sfm_allocation_migration_v131","done");
+ }
+}catch(e){}
 const saveToolData=()=>{localStorage.setItem("sfm_tools_v12",JSON.stringify(tools));localStorage.setItem("sfm_tool_clients_v12",JSON.stringify(toolClients));localStorage.setItem("sfm_tool_internal_v12",String(internalPct));localStorage.setItem("sfm_selected_tool_v13",String(selectedToolId||""));};
 const methodLabel=m=>T[lang][m==="seats"?"basisSeats":m==="usage"?"basisUsage":"basisPercentage"];
 function escapeTool(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function activeTools(){return tools.filter(t=>t.status==="Active");}
 function ensureToolDrivers(t){
- if(!t.drivers){t.drivers={};toolClients.forEach((c,i)=>{t.drivers[c.name]=t.method==="percentage"?Number(c.pct):t.method==="seats"?[3,2,3,1][i]||1:[30,25,20,15][i]||1;});t.internalDriver=t.method==="percentage"?internalPct:1;}
+ if(!t.drivers){t.drivers={};toolClients.forEach((c,i)=>{t.drivers[c.name]=t.method==="percentage"?Number(c.pct):t.method==="seats"?[3,2,3,1][i]||1:[30,25,20,15][i]||1;});t.internalDriver=t.method==="percentage"?internalPct:t.method==="usage"?10:1;}
  toolClients.forEach((c)=>{if(t.drivers[c.name]===undefined)t.drivers[c.name]=t.method==="percentage"?Number(c.pct):1;});
- if(t.internalDriver===undefined)t.internalDriver=t.method==="percentage"?internalPct:1;
+ if(t.internalDriver===undefined)t.internalDriver=t.method==="percentage"?internalPct:t.method==="usage"?10:1;
 }
 function renderToolInventory(){
  const body=document.getElementById("toolInventoryRows");if(!body)return;
@@ -152,7 +160,7 @@ document.getElementById("addToolBtn").onclick=()=>{
  const msg=document.getElementById("toolFormMessage");
  if(!name||!category||!Number.isFinite(cost)||cost<0){msg.textContent=T[lang].invalidTool;return;}
  const method=document.getElementById("toolMethod").value;
- const t={id:Date.now(),name,category,cost,method,start:document.getElementById("toolStart").value,renew:document.getElementById("toolRenew").value,frequency:document.getElementById("toolFrequency").value,status:document.getElementById("toolStatus").value,drivers:{},internalDriver:method==="percentage"?10:1};
+ const t={id:Date.now(),name,category,cost,method,start:document.getElementById("toolStart").value,renew:document.getElementById("toolRenew").value,frequency:document.getElementById("toolFrequency").value,status:document.getElementById("toolStatus").value,drivers:{},internalDriver:method==="percentage"?10:method==="usage"?10:1};
  toolClients.forEach((c,i)=>{t.drivers[c.name]=method==="percentage"?Number(c.pct):1;});
  tools.push(t);selectedToolId=t.id;saveToolData();["toolName","toolCategory","toolCost","toolStart","toolRenew"].forEach(id=>document.getElementById(id).value="");msg.textContent=T[lang].savedTool;renderToolModule();
 };

@@ -48,3 +48,10 @@ cost. Inventory totals, client allocation and internal agency share recalculate 
 tool allocations. This remains a browser-only prototype using localStorage, not a server database
 or synchronized multi-user system. Existing V1.2 tools are retained in the same browser.
 All sample names and values are fictional.
+
+
+## V1.3.1 – Usage allocation default correction
+Corrected the sample internal usage driver so usage-based tools start with 90 client units
+and 10 internal agency units, consistent with the sample allocation. Existing browser demo
+records created by V1.3 are migrated once when this version loads. This is a demo-only
+calculation and should be replaced with measured usage data in a production system.
