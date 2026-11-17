@@ -16,3 +16,12 @@ Reemplaza `docs/index.html` y `docs/README.md`. Conserva `docs/PROJECT_ROADMAP.m
 
 ## Privacidad y alcance
 Usa únicamente datos sintéticos. Los cambios se guardan en el almacenamiento local del navegador. Esta demostración no calcula nómina legal, prestaciones, aportes, impuestos ni sustituye un sistema contable.
+
+
+## V1.8 — Dynamic client allocation correction
+- Removed the dependency on fixed client A/client B or account X/account Y allocation positions.
+- Personnel allocation is now derived directly from each person's named client assignments (client, platform/account, function, hours and dedication percentage).
+- New client names entered in Platform Accounts & Functions are included automatically in personnel cost by client and profitability calculations.
+- The team allocation view is now a calculated summary from named assignments, avoiding a second manual allocation source.
+- When total assigned hours exceed monthly capacity, hours-based allocation is proportionally capped to prevent allocating more than 100% of a person's cost. Percentage-based allocation is similarly capped at 100%.
+- Demo data remains fictional. Data is stored only in this browser; no backend or accounting/payroll integration is included.

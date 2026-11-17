@@ -348,13 +348,18 @@ let teamMethod="hours";
 try{teamMethod=localStorage.getItem("sfm_team_method_v116")||localStorage.getItem("sfm_team_method_v16")||"hours";}catch(e){}
 const saveTeam=()=>{localStorage.setItem("sfm_team_members_v116",JSON.stringify(teamMembers));localStorage.setItem("sfm_team_method_v116",teamMethod);};
 function teamClientNames(){return [...new Set([...toolClients.map(c=>c.name),...teamMembers.flatMap(m=>(m.assignments||[]).map(a=>String(a[0]||"").trim()).filter(Boolean))])];}
+function memberClientAllocation(m,clientName){
+ const rows=Array.isArray(m.assignments)?m.assignments:[];
+ const matching=rows.filter(a=>String(a[0]||"").trim()===String(clientName||"").trim());
+ return {hours:matching.reduce((s,a)=>s+Math.max(0,Number(a[4])||0),0),pct:matching.reduce((s,a)=>s+Math.max(0,Number(a[5])||0),0)};
+}
 function memberPay(m){return Math.max(0,Number(m.base)||0)+Math.max(0,Number(m.fixedFee)||0)+Math.max(0,Number(m.variable)||0)+(m.type==="contractor"?Math.max(0,Number(m.hourlyRate)||0)*Math.max(0,Number(m.paidHours)||0):0);}
 function teamCalc(){
  const clients=teamClientNames(),byClient={};clients.forEach(n=>byClient[n]={hours:0,cost:0});
  let payroll=0,allocated=0,internal=0,totalCapacity=0,usedCapacity=0;
  teamMembers.forEach(m=>{
   const pay=memberPay(m),cap=Math.max(0,Number(m.capacity)||0);payroll+=pay;totalCapacity+=cap;
-  const weights=clients.map((_,i)=>teamMethod==="hours"?Math.max(0,Number(m.hours?.[i])||0):Math.max(0,Number(m.pct?.[i])||0));
+  const weights=clients.map(n=>{const a=memberClientAllocation(m,n);return teamMethod==="hours"?a.hours:a.pct;});
   if(teamMethod==="hours"){
    const sum=weights.reduce((a,b)=>a+b,0);usedCapacity+=Math.min(sum,cap);
    const scale=sum>cap&&sum>0?cap/sum:1;
@@ -381,8 +386,8 @@ function renderTeam(){
  document.getElementById("teamAllocationHelp").textContent=T[lang][teamMethod==="hours"?"teamAllocationHoursHelp":"teamAllocationSalaryHelp"];
  document.getElementById("teamAllocationHead").innerHTML=`<tr><th>${T[lang].teamMember}</th>${clients.map(n=>`<th>${n}</th>`).join("")}<th>${T[lang].internalWork}</th><th>${teamMethod==="hours"?T[lang].allocatedHours:"%"}</th></tr>`;
  document.getElementById("teamAllocationRows").innerHTML=teamMembers.map((m,i)=>{
-  const fields=clients.map((n,j)=>{const value=teamMethod==="hours"?(m.hours?.[j]??0):(m.pct?.[j]??0);return `<td><input type="number" min="0" step="0.5" data-team-alloc="${i}" data-client-index="${j}" value="${value}" style="width:75px;padding:7px;border:1px solid #d8e4dc;border-radius:8px"></td>`;}).join("");
-  const used=teamMethod==="hours"?(m.hours||[]).reduce((a,b)=>a+(Number(b)||0),0):(m.pct||[]).reduce((a,b)=>a+(Number(b)||0),0);
+  const fields=clients.map((n,j)=>{const a=memberClientAllocation(m,n),value=teamMethod==="hours"?a.hours:a.pct;return `<td><span>${value.toFixed(1)}</span></td>`;}).join("");
+  const used=clients.reduce((sum,n)=>{const a=memberClientAllocation(m,n);return sum+(teamMethod==="hours"?a.hours:a.pct);},0);
   const internal=teamMethod==="hours"?Math.max(0,m.capacity-used):Math.max(0,100-used);
   return `<tr><td><b>${m.name}</b></td>${fields}<td>${internal.toFixed(1)}${teamMethod==="hours"?" h":"%"}</td><td>${used.toFixed(1)}${teamMethod==="hours"?" h":"%"}</td></tr>`;
  }).join("");
@@ -391,7 +396,6 @@ function renderTeam(){
  document.getElementById("teamAssignmentChecks").innerHTML=teamMembers.map(m=>{const rows=m.assignments||[],hours=rows.reduce((s,a)=>s+(Number(a[4])||0),0),pct=rows.reduce((s,a)=>s+(Number(a[5])||0),0),cap=Math.max(0,Number(m.capacity)||0),remaining=cap-hours,expectedPct=cap?hours/cap*100:0,over=hours>cap+0.001||pct>100.001,mismatch=Math.abs(pct-expectedPct)>0.5,status=over?T[lang].capacityExceeded:(mismatch?T[lang].reviewDistribution:T[lang].withinCapacity),statusStyle=over||mismatch?'background:#fff1df;color:#9a5b00':'background:#e7f6ed;color:#16794b';return `<tr><td><b>${m.name}</b></td><td>${hours.toFixed(1)} h</td><td>${cap.toFixed(1)} h</td><td>${remaining.toFixed(1)} h</td><td>${pct.toFixed(1)}% <small style="color:#7b8b82">(${expectedPct.toFixed(1)}% según horas)</small></td><td><span class="badge" style="${statusStyle}">${status}</span></td></tr>`;}).join("");
  document.getElementById("teamClientRows").innerHTML=clients.map(n=>{const x=calc.byClient[n];return `<tr><td><b>${n}</b></td><td>${x.hours.toFixed(1)} h</td><td>${money(x.cost)}</td><td>${calc.payroll?((x.cost/calc.payroll)*100).toFixed(1):"0.0"}%</td></tr>`;}).join("");
  document.querySelectorAll("[data-team-index]").forEach(el=>el.onchange=()=>{const m=teamMembers[Number(el.dataset.teamIndex)];m[el.dataset.teamKey]=Math.max(1,Number(el.value)||1);saveTeam();renderTeam();});
- document.querySelectorAll("[data-team-alloc]").forEach(el=>el.onchange=()=>{const m=teamMembers[Number(el.dataset.teamAlloc)],j=Number(el.dataset.clientIndex),v=Math.max(0,Number(el.value)||0);if(teamMethod==="hours"){m.hours[j]=v;}else{m.pct[j]=v;}saveTeam();renderTeam();});
  document.querySelectorAll("[data-pay-index]").forEach(el=>el.onchange=()=>{const m=teamMembers[Number(el.dataset.payIndex)],k=el.dataset.payKey;m[k]=k==="type"?el.value:Math.max(0,Number(el.value)||0);if(k==="type"){const allowed=roleCatalog[m.type];m.roles=(m.roles||[]).filter(r=>allowed.includes(r));if(!m.roles.length)m.roles=[allowed[0]];m.role=m.roles.join(" + ");}saveTeam();renderTeam();});
  document.querySelectorAll("[data-role-index]").forEach(el=>el.onchange=()=>{const m=teamMembers[Number(el.dataset.roleIndex)];m.roles=Array.from(el.selectedOptions).map(o=>o.value);m.role=m.roles.join(" + ");saveTeam();renderTeam();});
  document.querySelectorAll("[data-asg-member]").forEach(el=>el.onchange=()=>{const m=teamMembers[Number(el.dataset.asgMember)],r=Number(el.dataset.asgRow),c=Number(el.dataset.asgCol);m.assignments[r][c]=(c>=4?Math.max(0,Number(el.value)||0):el.value);if(c===4){const cap=Math.max(0,Number(m.capacity)||0);m.assignments[r][5]=cap?Math.round((Number(m.assignments[r][4])||0)/cap*1000)/10:0;}const clientNames=teamClientNames();m.hours=clientNames.map(n=>m.assignments.filter(a=>a[0]===n).reduce((s,a)=>s+(Number(a[4])||0),0));m.pct=clientNames.map(n=>m.assignments.filter(a=>a[0]===n).reduce((s,a)=>s+(Number(a[5])||0),0));saveTeam();renderTeam();});
@@ -412,7 +416,7 @@ function saveBridgeCosts(){localStorage.setItem('sfm_bridge_costs_v112',JSON.str
 function saveOverhead(){localStorage.setItem('sfm_overhead_v112',JSON.stringify(overheadExpenses));}
 function teamCostSplitByClient(){
  const names=teamClientNames(),out={};names.forEach(n=>out[n]={employee:0,contractor:0});
- teamMembers.forEach(m=>{const pay=memberPay(m),weights=names.map((_,i)=>teamMethod==='hours'?Math.max(0,Number(m.hours?.[i])||0):Math.max(0,Number(m.pct?.[i])||0));if(teamMethod==='hours'){const cap=Math.max(0,Number(m.capacity)||0);names.forEach((n,i)=>{const v=cap?pay*weights[i]/cap:0;out[n][m.type==='employee'?'employee':'contractor']+=v;});}else{names.forEach((n,i)=>{out[n][m.type==='employee'?'employee':'contractor']+=pay*weights[i]/100;});}});
+ teamMembers.forEach(m=>{const pay=memberPay(m),weights=names.map(n=>{const a=memberClientAllocation(m,n);return teamMethod==='hours'?a.hours:a.pct;});if(teamMethod==='hours'){const cap=Math.max(0,Number(m.capacity)||0),sum=weights.reduce((a,b)=>a+b,0),scale=sum>cap&&sum>0?cap/sum:1;names.forEach((n,i)=>{const v=cap?pay*(weights[i]*scale)/cap:0;out[n][m.type==='employee'?'employee':'contractor']+=v;});}else{const sum=weights.reduce((a,b)=>a+b,0),scale=sum>100&&sum>0?100/sum:1;names.forEach((n,i)=>{out[n][m.type==='employee'?'employee':'contractor']+=pay*weights[i]*scale/100;});}});
  return out;
 }
 function getClientNames(){return [...new Set([...sfmInvoices.map(x=>x.client),...profitClients.map(x=>x.name),...toolClients.map(x=>x.name),...teamClientNames()])];}
