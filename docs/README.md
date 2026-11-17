@@ -18,7 +18,7 @@ Reemplaza `docs/index.html` y `docs/README.md`. Conserva `docs/PROJECT_ROADMAP.m
 Usa únicamente datos sintéticos. Los cambios se guardan en el almacenamiento local del navegador. Esta demostración no calcula nómina legal, prestaciones, aportes, impuestos ni sustituye un sistema contable.
 
 
-## V1.9 — Dynamic client allocation correction
+## V1.10 — Dynamic client allocation correction
 - Removed the dependency on fixed client A/client B or account X/account Y allocation positions.
 - Personnel allocation is now derived directly from each person's named client assignments (client, platform/account, function, hours and dedication percentage).
 - New client names entered in Platform Accounts & Functions are included automatically in personnel cost by client and profitability calculations.
@@ -27,10 +27,20 @@ Usa únicamente datos sintéticos. Los cambios se guardan en el almacenamiento l
 - Demo data remains fictional. Data is stored only in this browser; no backend or accounting/payroll integration is included.
 
 
-## V1.9 — Automatic hours / percentage consistency
+## V1.10 — Automatic hours / percentage consistency
 - In tracked-hours mode, dedication percentages are recalculated automatically from each assignment's hours and the person's productive monthly capacity.
 - In monthly-salary allocation mode, equivalent hours are recalculated from each assignment's percentage.
 - Existing saved demo assignments are normalized on render according to the selected costing method, correcting mismatches such as 100 assigned hours / 90% when capacity is 120 hours.
 - Capacity validation continues to warn when assigned hours exceed productive capacity or assigned percentages exceed 100%.
 - The selected method determines the source of truth; the derived measure is not independently editable in that mode.
 - All demo records remain fictional and browser-local.
+
+
+## V1.10 — Internal personnel cost in agency profitability
+- Added an explicit “Internal / unassigned cost” row to the Team & Capacity personnel-cost-by-client summary. It shows remaining productive capacity and the corresponding personnel cost not assigned to client work.
+- Added a separate “Internal / unassigned personnel” KPI to the financial bridge.
+- When “Include Team & Capacity allocation” is enabled, internal/unassigned personnel cost is included once in total agency operating cost and deducted from actual agency profit.
+- Client-level personnel costs remain allocated to their named clients; the internal row is not charged to any client.
+- Service contribution calculations use total agency costs including internal personnel.
+- When automatic Team & Capacity allocation is disabled, internal personnel is not added to the financial bridge, avoiding an unexpected charge when users enter personnel costs manually.
+- Synthetic demo data only; local browser storage; no accounting or payroll integration.
