@@ -1,33 +1,24 @@
 # Smart Financial Management
 
-Dashboard financiero demostrativo para agencias de marketing digital. Esta versión utiliza datos ficticios de demostración y almacenamiento local del navegador; no está conectada a SIIGO, bancos ni servicios externos.
-
 ## Publicación en GitHub Pages
 
-El sitio se publica desde la rama `main`, carpeta `/docs`. Para actualizarlo:
+Este proyecto se publica desde la rama `main`, carpeta `/docs`.
 
-1. Abre el repositorio `smart-financial-management` en GitHub.
-2. Entra en la carpeta `docs`.
-3. Reemplaza el archivo `index.html` por el incluido en esta carpeta.
-4. Reemplaza también `README.md` por este archivo si deseas actualizar las instrucciones.
-5. Confirma los cambios con **Commit changes**.
-6. Espera a que termine el flujo de publicación de GitHub Pages.
-7. Abre el sitio y fuerza la actualización con `Ctrl + Shift + R`.
+### Archivos
+- `index.html`: aplicación web y módulos.
+- `README.md`: estas instrucciones.
 
-## Módulos incluidos en la interfaz
+### Actualizar el sitio
+1. En GitHub, abre el repositorio `smart-financial-management`.
+2. Abre la carpeta `docs`.
+3. Reemplaza `index.html` por el archivo de esta carpeta.
+4. Conserva los demás archivos existentes, incluido `PROJECT_ROADMAP.md`.
+5. Confirma el cambio con **Commit changes**.
+6. Espera a que el flujo **pages build and deployment** finalice correctamente.
+7. Recarga el sitio con `Ctrl + Shift + R`.
 
-- Dashboard
-- Service Costing
-- Client Profitability
-- Invoices & Collections
-- Cash Flow
-- Team & Capacity
-- Digital Tools
+## Nota de diagnóstico
+La función auxiliar `byId` está declarada al inicio del bloque JavaScript, antes de que los módulos puedan invocarla. Si el navegador sigue mostrando el error anterior, comprueba que el archivo publicado sea este y que la consola no esté mostrando una versión almacenada en caché.
 
-## Importante
-
-- Conserva una copia de la versión anterior antes de reemplazar archivos.
-- No modifiques la configuración de GitHub Pages: debe permanecer en `main` y `/docs`.
-- Los datos ingresados en módulos que usan `localStorage` quedan guardados en ese navegador y dispositivo; no se sincronizan automáticamente entre usuarios o dispositivos.
-- Utiliza únicamente datos ficticios. No ingreses información financiera, bancaria, personal o confidencial de clientes o empleados.
-- Esta entrega no garantiza por sí sola que todos los módulos funcionen en el sitio publicado. Después de publicarla, verifica cada opción del menú y revisa la consola del navegador si aparece un error.
+## Datos
+La aplicación utiliza datos demostrativos ficticios. No cargues información confidencial, bancaria, de clientes ni de empleados.
