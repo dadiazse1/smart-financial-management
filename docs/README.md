@@ -48,3 +48,7 @@ Reemplaza únicamente `docs/index.html` y `docs/README.md` con los archivos de e
 
 ## V1.21 – Bilingual costing snapshot correction
 The costing engine and unit economics snapshot now explicitly apply Spanish and English labels when the language selector changes, including after page re-rendering.
+
+
+## Version 1.23 correction
+The Team & Capacity client-cost table now includes an explicit Internal / unassigned cost row. This reconciles client-allocated personnel cost plus internal/unassigned personnel cost to the total monthly payroll, and shows the corresponding unassigned hours and payroll share. All sample data remains fictional.
