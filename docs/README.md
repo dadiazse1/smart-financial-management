@@ -44,3 +44,7 @@ Usa únicamente datos sintéticos. Los cambios se guardan en el almacenamiento l
 
 ## Publicación
 Reemplaza únicamente `docs/index.html` y `docs/README.md` con los archivos de este paquete. Conserva `docs/PROJECT_ROADMAP.md` y la configuración de GitHub Pages. Después de publicar, abre el sitio y presiona `Ctrl + Shift + R`.
+
+
+## V1.21 – Bilingual costing snapshot correction
+The costing engine and unit economics snapshot now explicitly apply Spanish and English labels when the language selector changes, including after page re-rendering.
