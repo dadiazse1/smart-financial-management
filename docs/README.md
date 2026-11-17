@@ -52,3 +52,15 @@ The costing engine and unit economics snapshot now explicitly apply Spanish and 
 
 ## Version 1.23 correction
 The Team & Capacity client-cost table now includes an explicit Internal / unassigned cost row. This reconciles client-allocated personnel cost plus internal/unassigned personnel cost to the total monthly payroll, and shows the corresponding unassigned hours and payroll share. All sample data remains fictional.
+
+
+## Version 1.24 — Service Costing module
+
+- Replaces the Service Costing placeholder with an editable service/project register.
+- Tracks client, service, project/account, service revenue, other direct costs and client-funded media spend.
+- Imports personnel allocations from Team & Capacity and shared software allocations from Digital Tools. Imported shared costs are allocated across each client’s service records in proportion to service revenue, avoiding duplicate manual entry.
+- Separates client-funded media investment by default, with an explicit option to include it in service cost.
+- Shows service-level contribution, contribution margin and client-level summaries.
+- Uses fictional sample data and browser-local storage only. No backend, database, authentication or live accounting integrations.
+
+To publish: replace `docs/index.html` and `docs/README.md` with the files in this package. Preserve `docs/PROJECT_ROADMAP.md` and the GitHub Pages settings.
