@@ -18,10 +18,19 @@ Reemplaza `docs/index.html` y `docs/README.md`. Conserva `docs/PROJECT_ROADMAP.m
 Usa únicamente datos sintéticos. Los cambios se guardan en el almacenamiento local del navegador. Esta demostración no calcula nómina legal, prestaciones, aportes, impuestos ni sustituye un sistema contable.
 
 
-## V1.8 — Dynamic client allocation correction
+## V1.9 — Dynamic client allocation correction
 - Removed the dependency on fixed client A/client B or account X/account Y allocation positions.
 - Personnel allocation is now derived directly from each person's named client assignments (client, platform/account, function, hours and dedication percentage).
 - New client names entered in Platform Accounts & Functions are included automatically in personnel cost by client and profitability calculations.
 - The team allocation view is now a calculated summary from named assignments, avoiding a second manual allocation source.
 - When total assigned hours exceed monthly capacity, hours-based allocation is proportionally capped to prevent allocating more than 100% of a person's cost. Percentage-based allocation is similarly capped at 100%.
 - Demo data remains fictional. Data is stored only in this browser; no backend or accounting/payroll integration is included.
+
+
+## V1.9 — Automatic hours / percentage consistency
+- In tracked-hours mode, dedication percentages are recalculated automatically from each assignment's hours and the person's productive monthly capacity.
+- In monthly-salary allocation mode, equivalent hours are recalculated from each assignment's percentage.
+- Existing saved demo assignments are normalized on render according to the selected costing method, correcting mismatches such as 100 assigned hours / 90% when capacity is 120 hours.
+- Capacity validation continues to warn when assigned hours exceed productive capacity or assigned percentages exceed 100%.
+- The selected method determines the source of truth; the derived measure is not independently editable in that mode.
+- All demo records remain fictional and browser-local.
