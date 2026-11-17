@@ -64,3 +64,13 @@ The Team & Capacity client-cost table now includes an explicit Internal / unassi
 - Uses fictional sample data and browser-local storage only. No backend, database, authentication or live accounting integrations.
 
 To publish: replace `docs/index.html` and `docs/README.md` with the files in this package. Preserve `docs/PROJECT_ROADMAP.md` and the GitHub Pages settings.
+
+
+## V1.25 — Cash Flow
+- Cash Flow module with editable opening cash balance.
+- Weekly 8-week forecast based on invoice outstanding balances and due dates.
+- Actual collections are taken from payment records and therefore reduce outstanding invoice balances.
+- Scheduled obligations (payroll, contractors, software, taxes, rent and other) can be added, edited only by deleting/re-entering, and removed.
+- Invoice due date field added to Invoices & Collections and connected to the cash forecast.
+- Invoices without due dates remain visible as unscheduled; no payment date is invented from historical behavior.
+- All records are synthetic/local browser data; no backend or multi-user synchronization.
