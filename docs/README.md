@@ -66,7 +66,7 @@ The Team & Capacity client-cost table now includes an explicit Internal / unassi
 To publish: replace `docs/index.html` and `docs/README.md` with the files in this package. Preserve `docs/PROJECT_ROADMAP.md` and the GitHub Pages settings.
 
 
-## V1.25 — Cash Flow
+## V1.25.1 — Cash Flow
 - Cash Flow module with editable opening cash balance.
 - Weekly 8-week forecast based on invoice outstanding balances and due dates.
 - Actual collections are taken from payment records and therefore reduce outstanding invoice balances.

@@ -558,6 +558,25 @@ byId('cfOpening').value=Number(localStorage.getItem(cfOpeningKey)||12000000);byI
 function render(){document.querySelectorAll("[data-t]").forEach(e=>{let k=e.dataset.t;if(T[lang][k])e.textContent=T[lang][k]});document.querySelectorAll(".money").forEach(e=>e.textContent=money(+e.dataset.v));document.getElementById("rows").innerHTML=accounts.map(a=>`<tr><td><b>${a[0]}</b></td><td>${money(a[1])}</td><td>${money(a[2])}</td><td>${money(a[1]-a[2])}</td><td><span class="margin">${a[3]}%</span><div class="bar"><i style="width:${a[3]}%"></i></div></td><td><span class="badge">${a[3]>=50?T[lang].healthy:T[lang].review}</span></td></tr>`).join("");document.getElementById("title").textContent=T[lang][document.querySelector(".nav button.active").dataset.page]||T[lang].titleDash;if(document.getElementById("toolAllocRows"))renderToolModule();if(document.getElementById("profitClientRows"))renderProfitability();if(document.getElementById("teamRosterRows"))renderTeam();if(document.getElementById("bridgeRows"))renderFinanceBridge();if(document.getElementById("scRows"))scRender();if(document.getElementById("cfWeeks"))cfRender();document.getElementById("noteText").textContent=T[lang][ads==="separate"?(labor==="both"?"noteBoth":"noteSeparate"):"noteCost"]+(ads==="separate"&&labor!=="both"?" "+T[lang][labor==="hours"?"noteHours":"noteSalary"]:"")}
 document.getElementById("lang").onchange=e=>{lang=e.target.value;render();apply18Lang();if(byId('cfWeeks'))cfRender();};document.getElementById("currency").onchange=e=>{currency=e.target.value;render()};
 document.getElementById("nav").onclick=e=>{let b=e.target.closest("button[data-page]");if(!b)return;document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id==="p-"+b.dataset.page));render();document.getElementById("side").classList.remove("open")};
+// Navigation reliability patch: direct handlers ensure every module button switches its page.
+document.querySelectorAll("#nav button[data-page]").forEach(btn=>{
+  btn.addEventListener("click",function(ev){
+    ev.preventDefault();
+    ev.stopPropagation();
+    const target=this.dataset.page;
+    const page=document.getElementById("p-"+target);
+    if(!page){console.error("Missing module page:",target);return;}
+    document.querySelectorAll("#nav button[data-page]").forEach(x=>x.classList.toggle("active",x===this));
+    document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x===page));
+    const title=document.getElementById("title");
+    if(title && T[lang]) title.textContent=T[lang][target]||T[lang].titleDash;
+    try { render(); } catch(err) { console.error("Module render error:",err); }
+    const side=document.getElementById("side");
+    if(side) side.classList.remove("open");
+    window.scrollTo(0,0);
+  },true);
+});
+
 function bindSeg(id,cb){document.getElementById(id).onclick=e=>{let b=e.target.closest("button[data-mode]");if(!b)return;document.querySelectorAll("#"+id+" button").forEach(x=>x.classList.toggle("active",x===b));cb(b.dataset.mode);render()}}
 bindSeg("labor",v=>labor=v);bindSeg("ads",v=>ads=v);document.getElementById("menu").onclick=()=>document.getElementById("side").classList.toggle("open");
 
