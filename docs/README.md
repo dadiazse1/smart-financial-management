@@ -74,3 +74,9 @@ To publish: replace `docs/index.html` and `docs/README.md` with the files in thi
 - Invoice due date field added to Invoices & Collections and connected to the cash forecast.
 - Invoices without due dates remain visible as unscheduled; no payment date is invented from historical behavior.
 - All records are synthetic/local browser data; no backend or multi-user synchronization.
+
+
+## V1.25.3 — Corrección de navegación
+- Se reemplazaron los controladores duplicados del menú por un único controlador delegado.
+- Cada botón valida que exista su página y activa únicamente el módulo correspondiente.
+- Se conserva el contenido de los módulos, los cálculos y los datos sintéticos/locales.
